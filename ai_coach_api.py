@@ -21,6 +21,41 @@ QUESTIONS = [
     }
 ]
 
+@app.route("/")
+def home():
+    return "OK"
+
+@app.route("/alexa", methods=["POST"])
+def alexa():
+    req = request.json
+
+    if req["request"]["type"] == "LaunchRequest":
+        return jsonify({
+            "version": "1.0",
+            "response": {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": "Welcome to DSA AI Coach. Say give me a question."
+                },
+                "shouldEndSession": False
+            }
+        })
+    intent_name = req["request"]["intent"]["name"]
+
+    if intent_name == "AskQuestionIntent":
+        q = random.choice(QUESTIONS)
+
+        return jsonify({
+            "version": "1.0",
+            "response": {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": q
+                },
+                "shouldEndSession": False
+            }
+        })
+        
 @app.route("/ask", methods=["GET"])
 def ask():
     q = random.choice(QUESTIONS)
